@@ -11,3 +11,11 @@ print("Socket created")
 server_socket.bind((HOST, PORT))
 server_socket.listen()
 print(f"Start listening on {PORT}")
+
+clients = []
+
+
+# Broadcasts a message to all connected clients
+def broadcast(message):
+    for client in clients:
+        client.send(message)

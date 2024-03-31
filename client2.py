@@ -1,4 +1,5 @@
 import socket
+import threading
 
 # Server configuration
 SERVER_IP = "127.0.0.1"
@@ -25,3 +26,18 @@ def receive():
             print("Error", e)
             client_socket.close()
             break
+
+
+# Allows the client to input messages and sends them to the server
+def write():
+    while True:
+        message = f"{nickname} -> {input()}"
+        client_socket.send(message.encode())
+
+
+# Create threads for receiving and writing messages
+receive_thread = threading.Thread(target=receive)
+receive_thread.start()
+
+write_thread = threading.Thread(target=write)
+write_thread.start()

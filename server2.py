@@ -1,4 +1,5 @@
 import socket
+import threading
 
 # Server configuration
 HOST = '127.0.0.1'
@@ -45,3 +46,27 @@ def handle_client(client):
             nicknames.remove(nickname)
             broadcast(f"{nickname} left the chat".encode())
             break
+
+
+def recived():
+    while True:
+        client, address = server_socket.accept()
+        print(f"Connection established with {address}")
+
+        # Send a prompt for the client to provide a nickname
+        client.send("Nickname".encode())
+        nickname = client.recv(1024).decode()
+        # Add the client and its nickname to the lists
+        nicknames.append(nickname)
+        clients.append(client)
+
+        print(f"{nickname} connected")
+        # Broadcast a message indicating the client has joined the chat
+        broadcast(f"{nickname} joined the chat".encode())
+
+        # Start a new thread to handle communication with the client
+        thread = threading.Thread(target=handle_client, args=(client,))
+        thread.start()
+
+recived()
+
